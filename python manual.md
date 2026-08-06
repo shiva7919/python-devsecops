@@ -1,13 +1,7 @@
-# Python for DevOps, DevSecOps & Security Engineering
-## A Foundational Training Manual for Interns and Trainees
+# Python for DevSecOps & Security Engineering
+
 
 ---
-
-## Version History
-
-| Version | Date | Author | Description |
-|---|---|---|---|
-| 1.0 | 2026-08-06 | DevOps Enablement / L&D | Initial release |
 
 ---
 
@@ -37,7 +31,7 @@
 
 ## 1. Purpose
 
-This manual establishes a structured, self-paced Python curriculum for engineers entering DevOps, DevSecOps, Security Engineering, Cloud Engineering, Site Reliability Engineering (SRE), Platform Engineering, and Infrastructure Engineering roles. It is designed for use in a corporate onboarding program or Learning Management System (LMS), and prioritizes practical infrastructure and security automation over academic programming theory.
+This manual establishes a structured, self-paced Python curriculum for engineers. It is designed for use in a corporate onboarding program or Learning Management System (LMS), and prioritizes practical infrastructure and security automation over academic programming theory.
 
 ## 2. Scope
 
@@ -49,8 +43,7 @@ The manual covers Python fundamentals through early object-oriented and generato
 Out of scope: advanced Python (async/await, metaclasses, packaging/distribution), web frameworks, and cloud-provider-specific SDK usage — these belong in follow-on tracks.
 
 ## 3. Intended Audience
-
-Interns, graduate engineers, associate engineers, and trainees entering DevOps, DevSecOps, Security Engineering, Cloud Engineering, or SRE roles. Readers are assumed to have basic computer literacy and basic Linux familiarity, but no prior programming experience.
+ Readers are assumed to have basic computer literacy and basic Linux familiarity, but no prior programming experience.
 
 ## 4. Learning Objectives
 
