@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>python-training-docs — Python for DevOps, DevSecOps &amp; Platform Engineering</title>
+<meta name="description" content="A hands-on documentation course teaching Python fundamentals through real DevOps, security, SRE, and cloud engineering scenarios.">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+<script>
+  // Prevent flash of wrong theme before CSS loads
+  (function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();
+</script>
+</head>
+<body data-page="home" data-root="">
+
+<div id="site-header"></div>
+
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__eyebrow"><span class="status-dot"></span> status: training-environment/online</div>
+    <h1>Python, taught the way you'll actually use it in production.</h1>
+    <p class="hero__sub">A documentation-style course for DevOps, DevSecOps, Security, Cloud, SRE, and Platform Engineering interns — every concept is taught through servers, pipelines, logs, and infrastructure, not fruit and animal examples.</p>
+    <div class="hero__actions">
+      <a class="btn" href="pages/introduction.html">Start the course →</a>
+      <a class="btn btn--ghost" href="pages/labs.html">Jump to labs</a>
+    </div>
+    <div class="hero__meta">
+      <div><b>7</b> core modules</div>
+      <div><b>8</b> hands-on labs</div>
+      <div><b>10</b> mini projects</div>
+      <div><b>~18–24 hrs</b> estimated duration</div>
+      <div id="hero-progress-label"><b id="hero-progress-pct">0%</b> your progress</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__eyebrow">// course-overview</div>
+  <h2>What this course covers</h2>
+  <p class="section__intro">python-training-docs teaches core Python — variables, control flow, functions, and object-oriented programming — using the exact kinds of problems you'll be handed in your first month on an infrastructure or security team: parsing logs, validating configs, checking service health, and automating repetitive operational work.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <span class="tag">module 01</span>
+      <h3>Python Basics</h3>
+      <p>Variables, conditions, and loops — applied to servers, IP addresses, config files, and Kubernetes objects.</p>
+    </div>
+    <div class="card">
+      <span class="tag">module 02</span>
+      <h3>Functions</h3>
+      <p>Package repeatable operational tasks — disk checks, service restarts, deployments — into reusable functions.</p>
+    </div>
+    <div class="card">
+      <span class="tag">module 03</span>
+      <h3>Object-Oriented Programming</h3>
+      <p>Model servers, containers, pipelines, and alerts as classes — the pattern behind most automation frameworks.</p>
+    </div>
+    <div class="card">
+      <span class="tag">module 04</span>
+      <h3>Generators</h3>
+      <p>Stream huge log files and event feeds without blowing up memory, using <code>yield</code> and lazy evaluation.</p>
+    </div>
+    <div class="card">
+      <span class="tag">practice</span>
+      <h3>Hands-on Labs</h3>
+      <p>Eight guided labs covering Linux automation, Docker, Kubernetes, log parsing, and security analysis.</p>
+    </div>
+    <div class="card">
+      <span class="tag">practice</span>
+      <h3>Mini Projects</h3>
+      <p>Ten build-from-scratch projects, from a system info collector to a file integrity checker.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="audience">
+  <div class="section__eyebrow">// audience</div>
+  <h2>Who this is for</h2>
+  <p class="section__intro">Written for interns and early-career engineers heading into infrastructure-adjacent roles. No prior programming experience is assumed — comfort with a Linux terminal is helpful but not required.</p>
+  <div class="card-grid">
+    <div class="card"><h3>DevOps Interns</h3><p>Automating deployments, builds, and infrastructure tasks.</p></div>
+    <div class="card"><h3>DevSecOps Interns</h3><p>Baking security checks into pipelines and configs.</p></div>
+    <div class="card"><h3>Security Engineers</h3><p>Parsing logs, alerts, and SIEM events at scale.</p></div>
+    <div class="card"><h3>Cloud Engineers</h3><p>Scripting against AWS, Azure, and GCP resources.</p></div>
+    <div class="card"><h3>SRE Trainees</h3><p>Monitoring, alerting, and incident-response tooling.</p></div>
+    <div class="card"><h3>Platform Engineers</h3><p>Building the internal tools other teams rely on.</p></div>
+  </div>
+</section>
+
+<section class="section" id="roadmap">
+  <div class="section__eyebrow">// learning-path</div>
+  <h2>Course roadmap</h2>
+  <p class="section__intro">Follow the modules in order — each one builds on the last, ending in labs and projects that combine everything.</p>
+  <div class="roadmap">
+    <div class="roadmap__step" data-n="1"><h3>Introduction</h3><p>Course structure, setup, and how to use this documentation.</p></div>
+    <div class="roadmap__step" data-n="2"><h3>Variables</h3><p>Store server names, IPs, config values, and environment variables.</p></div>
+    <div class="roadmap__step" data-n="3"><h3>Conditions</h3><p>Branch on disk usage, service health, and firewall rules.</p></div>
+    <div class="roadmap__step" data-n="4"><h3>Loops</h3><p>Iterate over servers, log lines, pods, and EC2 instances.</p></div>
+    <div class="roadmap__step" data-n="5"><h3>Functions</h3><p>Turn one-off scripts into reusable automation.</p></div>
+    <div class="roadmap__step" data-n="6"><h3>OOP, Constructors &amp; Generators</h3><p>Model infrastructure as objects and stream large datasets.</p></div>
+    <div class="roadmap__step" data-n="7"><h3>Labs &amp; Projects</h3><p>Apply everything to realistic automation and security tooling.</p></div>
+  </div>
+</section>
+
+<section class="section" id="outcomes">
+  <div class="section__eyebrow">// skills-and-careers</div>
+  <h2>Skills gained &amp; where they lead</h2>
+  <p class="section__intro">By the end of this course you'll be comfortable writing small, reliable Python tools — the exact skill that separates engineers who script their own work from engineers who repeat it by hand.</p>
+  <div class="career-grid">
+    <div class="card"><h3>Junior DevOps Engineer</h3></div>
+    <div class="card"><h3>DevSecOps Engineer</h3></div>
+    <div class="card"><h3>Security Analyst / Engineer</h3></div>
+    <div class="card"><h3>Cloud Support Engineer</h3></div>
+    <div class="card"><h3>Site Reliability Engineer</h3></div>
+    <div class="card"><h3>Platform Engineer</h3></div>
+  </div>
+</section>
+
+<section class="section" id="stack">
+  <div class="section__eyebrow">// technology-stack</div>
+  <h2>Tools referenced throughout</h2>
+  <div class="stack-icons">
+    <span>Python 3</span><span>Linux / Bash</span><span>Docker</span><span>Kubernetes</span>
+    <span>AWS</span><span>YAML / JSON</span><span>Git</span><span>systemd</span>
+    <span>Logging &amp; SIEM</span><span>REST APIs</span>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="js/navigation.js"></script>
+<script src="js/app.js"></script>
+<script src="js/search.js"></script>
+<script src="js/progress.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('site-footer').innerHTML =
+      '<footer class="site-footer">python-training-docs · built for internal training use · <a href="pages/assessment.html">take the final assessment →</a></footer>';
+    const pctEl = document.getElementById('hero-progress-pct');
+    if (pctEl && window.ProgressTracker) pctEl.textContent = ProgressTracker.percentComplete() + '%';
+  });
+</script>
+</body>
+</html>
