@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conditions — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="conditions" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/conditions.html · module 02</div>
+    <h1>Conditions</h1>
+    <p>Conditions let a script make decisions: restart a service only if it's down, block a login only after too many failed attempts, flag a firewall rule only if it's too permissive. Almost every automation script is, underneath, a chain of conditions.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>An <code>if</code> statement evaluates an expression for truthiness and runs its block only when that expression is <code>True</code>. Python's <code>elif</code>/<code>else</code> chain lets you branch across multiple mutually-exclusive cases without nesting.</p>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>conditions_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>disk_used_percent = <span class="tok-num">92</span>
+
+<span class="tok-kw">if</span> disk_used_percent &gt;= <span class="tok-num">90</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"CRITICAL: disk almost full"</span>)
+<span class="tok-kw">elif</span> disk_used_percent &gt;= <span class="tok-num">75</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"WARNING: disk usage high"</span>)
+<span class="tok-kw">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"OK: disk usage normal"</span>)</code></pre>
+    </div>
+
+    <h2 id="operators">Comparison &amp; logical operators</h2>
+    <table>
+      <thead><tr><th>Operator</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>==</code> / <code>!=</code></td><td>equal to / not equal to</td></tr>
+        <tr><td><code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></td><td>numeric comparison</td></tr>
+        <tr><td><code>and</code></td><td>both conditions must be true</td></tr>
+        <tr><td><code>or</code></td><td>at least one condition is true</td></tr>
+        <tr><td><code>not</code></td><td>inverts a boolean</td></tr>
+        <tr><td><code>in</code></td><td>membership test (list, string, dict keys)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="devsec-examples">Practical examples</h2>
+    <h3>Service health check</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>service_health.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>service_status = <span class="tok-str">"stopped"</span>
+restart_attempts = <span class="tok-num">2</span>
+max_restart_attempts = <span class="tok-num">3</span>
+
+<span class="tok-kw">if</span> service_status == <span class="tok-str">"stopped"</span> <span class="tok-kw">and</span> restart_attempts &lt; max_restart_attempts:
+    <span class="tok-bi">print</span>(<span class="tok-str">"Attempting restart..."</span>)
+<span class="tok-kw">elif</span> service_status == <span class="tok-str">"stopped"</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"ALERT: max restart attempts reached, paging on-call"</span>)
+<span class="tok-kw">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"Service is healthy"</span>)</code></pre>
+    </div>
+
+    <h3>Login validation</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>login_validation.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>failed_attempts = <span class="tok-num">5</span>
+account_locked = <span class="tok-kw">False</span>
+
+<span class="tok-kw">if</span> failed_attempts &gt;= <span class="tok-num">5</span> <span class="tok-kw">and</span> <span class="tok-kw">not</span> account_locked:
+    account_locked = <span class="tok-kw">True</span>
+    <span class="tok-bi">print</span>(<span class="tok-str">"Account locked after 5 failed attempts"</span>)</code></pre>
+    </div>
+
+    <h3>Password policy check</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>password_policy.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>password = <span class="tok-str">"Prod$erver2026"</span>
+
+has_length = <span class="tok-bi">len</span>(password) &gt;= <span class="tok-num">12</span>
+has_digit = <span class="tok-bi">any</span>(c.isdigit() <span class="tok-kw">for</span> c <span class="tok-kw">in</span> password)
+has_symbol = <span class="tok-bi">any</span>(c <span class="tok-kw">in</span> <span class="tok-str">"!@#$%^&*"</span> <span class="tok-kw">for</span> c <span class="tok-kw">in</span> password)
+
+<span class="tok-kw">if</span> has_length <span class="tok-kw">and</span> has_digit <span class="tok-kw">and</span> has_symbol:
+    <span class="tok-bi">print</span>(<span class="tok-str">"Password meets policy"</span>)
+<span class="tok-kw">else</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"Password rejected: does not meet policy"</span>)</code></pre>
+    </div>
+
+    <h3>Firewall rule validation</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>firewall_check.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>source_cidr = <span class="tok-str">"0.0.0.0/0"</span>
+port = <span class="tok-num">22</span>
+
+<span class="tok-kw">if</span> port == <span class="tok-num">22</span> <span class="tok-kw">and</span> source_cidr == <span class="tok-str">"0.0.0.0/0"</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"HIGH RISK: SSH open to the entire internet"</span>)</code></pre>
+    </div>
+
+    <div class="callout callout--tip">
+      <div class="callout__title">Tip</div>
+      <p>Prefer clear boolean names (<code>is_healthy</code>, <code>has_valid_cert</code>) over cryptic flags — your future self debugging a 3am page will thank you.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Write a check that prints <code>"scale up"</code> if CPU load is above 80%, <code>"scale down"</code> if below 20%, and <code>"steady"</code> otherwise.</li>
+      <li>Given a list of open ports, print a warning for any port that is <code>21</code>, <code>23</code>, or <code>3389</code> (commonly restricted protocols).</li>
+      <li>Write a condition that flags a TLS certificate as <code>"expiring soon"</code> if fewer than 14 days remain, using an integer variable <code>days_until_expiry</code>.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "Which operator checks that both conditions are true?",
+          options: ["or", "and", "not", "=="],
+          correctIndex: 1,
+          explanation: "`and` requires both sides to be true; `or` requires only one."
+        },
+        {
+          question: "What will this print? x = 70 \\n if x >= 90: print('a') \\n elif x >= 50: print('b') \\n else: print('c')",
+          options: ["a", "b", "c", "Nothing"],
+          correctIndex: 1,
+          explanation: "70 fails the first check (>=90) but passes the second (>=50), so 'b' is printed."
+        },
+        {
+          question: "What does `not account_locked` evaluate to if account_locked is False?",
+          options: ["False", "True", "None", "An error"],
+          correctIndex: 1,
+          explanation: "`not` inverts the boolean — not False is True."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li><code>if</code> / <code>elif</code> / <code>else</code> branch execution based on boolean expressions.</li>
+      <li>Combine conditions with <code>and</code>, <code>or</code>, and <code>not</code> to express real operational rules.</li>
+      <li>Most health checks, validation logic, and security gates in automation scripts are conditions at their core.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 02 of 07</span><span>Reading time: ~10 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

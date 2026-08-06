@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Projects — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="projects" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content" style="max-width:860px;">
+    <div class="eyebrow"><span class="status-dot"></span> pages/projects.html</div>
+    <h1>Mini Projects</h1>
+    <p>Ten build-from-scratch projects that combine everything from the course. Each one is scoped to a single sitting (1–3 hours) and produces a real, runnable tool.</p>
+    <div style="margin-bottom:1.5rem;"><button class="btn btn--ghost btn--sm" id="expand-all">Expand all</button> <button class="btn btn--ghost btn--sm" id="collapse-all">Collapse all</button></div>
+
+    <div class="disclosure is-open">
+      <button class="disclosure__trigger">01 · System Information Collector</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a script that gathers hostname, OS, CPU count, memory, and disk usage into a single report using <code>platform</code>, <code>os</code>, and <code>shutil</code>.</p>
+        <p><b>Requirements:</b> a <code>SystemInfo</code> class with a <code>to_dict()</code> method; print the report as formatted text and optionally as JSON.</p>
+        <p><b>Stretch goal:</b> write the report to a timestamped file so it can be diffed against a previous run.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">02 · Log Analyzer</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a command-line tool that reads a log file and reports counts by severity, the top 5 most frequent error messages, and the busiest hour.</p>
+        <p><b>Requirements:</b> use a generator to stream the file; use a <code>dict</code> to tally counts; accept the file path as a command-line argument via <code>sys.argv</code>.</p>
+        <p><b>Stretch goal:</b> support multiple log files in one run and merge the results.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">03 · Service Health Monitor</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a poller that checks a list of services (simulated or real via <code>requests.get</code> against health endpoints) on an interval and prints status changes.</p>
+        <p><b>Requirements:</b> a <code>Service</code> class per Lab 03; track state transitions (only print when status <em>changes</em>, not every poll); handle connection errors gracefully.</p>
+        <p><b>Stretch goal:</b> write status changes to a small history log file with timestamps.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">04 · Backup Script</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a directory backup tool with compression and retention rotation, extending Lab 08.</p>
+        <p><b>Requirements:</b> <code>create_backup()</code>, <code>rotate_backups(keep=N)</code>, and a summary printed at the end (files backed up, archive size, archives remaining).</p>
+        <p><b>Stretch goal:</b> support excluding paths via a simple ignore-pattern list.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">05 · Password Strength Checker</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a function-based checker that scores a password against length, character-class, and common-password-list rules.</p>
+        <p><b>Requirements:</b> return a score (0–100) and a list of specific reasons for any deductions, not just pass/fail.</p>
+        <p><b>Stretch goal:</b> check the password against a small local list of the 100 most common leaked passwords and reject an exact match outright.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">06 · Docker Status Checker</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> extend Lab 04 into a standalone tool that exits with a non-zero status code if any container is unhealthy — suitable for a CI health gate.</p>
+        <p><b>Requirements:</b> a <code>ContainerReport</code> class; a clear pass/fail summary printed to stdout; correct use of <code>sys.exit()</code>.</p>
+        <p><b>Stretch goal:</b> add a <code>--json</code> flag that prints machine-readable output instead of the human-readable summary.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">07 · Kubernetes Resource Reporter</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> given a list of simulated pod/deployment dicts, generate a report of total CPU/memory requested per namespace.</p>
+        <p><b>Requirements:</b> a <code>KubernetesCluster</code> class per Module 05; a generator that filters by namespace; totals computed with <code>sum()</code>.</p>
+        <p><b>Stretch goal:</b> flag namespaces that exceed a configurable resource quota.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">08 · Security Event Parser</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> extend Lab 07's brute-force detector into a general-purpose security event parser that classifies events by type (failed login, privilege escalation, firewall block).</p>
+        <p><b>Requirements:</b> a <code>SecurityAlert</code> class per Module 05; a <code>generate_report()</code> function per Module 04; output sorted by severity.</p>
+        <p><b>Stretch goal:</b> deduplicate repeated alerts from the same source within a time window.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">09 · REST API Client</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a small wrapper class around the <code>requests</code> library for calling a JSON API (e.g. a status page or public API), with retry logic on failure.</p>
+        <p><b>Requirements:</b> an <code>APIClient</code> class with <code>__init__(self, base_url, api_key=None)</code>; a <code>get(path)</code> method with retries using a loop; proper error handling for non-200 responses.</p>
+        <p><b>Stretch goal:</b> add basic response caching so repeated calls within a short window don't hit the network again.</p>
+      </div>
+    </div>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">10 · File Integrity Checker</button>
+      <div class="disclosure__panel">
+        <p><b>Build:</b> a tool that hashes a directory's files (SHA-256) and detects any changes against a saved baseline — a simplified file integrity monitor.</p>
+        <p><b>Requirements:</b> use <code>hashlib</code> to compute file hashes; store the baseline as JSON; a <code>compare()</code> function that reports added, removed, and modified files.</p>
+        <p><b>Stretch goal:</b> use a generator to hash files lazily so scanning a very large directory tree doesn't stall the whole run before reporting anything.</p>
+      </div>
+    </div>
+
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>10 projects</span><span>Estimated total time: ~15 hrs</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

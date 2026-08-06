@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loops — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="loops" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/loops.html · module 03</div>
+    <h1>Loops</h1>
+    <p>Loops are how a script scales from "check one server" to "check every server." Anywhere you'd otherwise copy-paste the same operation ten times, a loop belongs instead.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>Python has two loop constructs: <code>for</code>, which iterates over a known collection (a list, a file, a range of numbers), and <code>while</code>, which repeats as long as a condition stays true. Infrastructure scripts lean heavily on <code>for</code> loops because most of what you're processing — server lists, log lines, API results — is already a collection.</p>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>loops_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>servers = [<span class="tok-str">"web-01"</span>, <span class="tok-str">"web-02"</span>, <span class="tok-str">"web-03"</span>]
+
+<span class="tok-kw">for</span> server <span class="tok-kw">in</span> servers:
+    <span class="tok-bi">print</span>(<span class="tok-str">f"checking {server}..."</span>)
+
+<span class="tok-com"># while loop: repeat until a condition changes</span>
+attempts = <span class="tok-num">0</span>
+<span class="tok-kw">while</span> attempts &lt; <span class="tok-num">3</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">f"attempt {attempts + 1}"</span>)
+    attempts += <span class="tok-num">1</span></code></pre>
+    </div>
+
+    <h3><code>break</code>, <code>continue</code>, and <code>enumerate</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>loop_controls.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>ports = [<span class="tok-num">22</span>, <span class="tok-num">80</span>, <span class="tok-num">443</span>, <span class="tok-num">3389</span>]
+
+<span class="tok-kw">for</span> i, port <span class="tok-kw">in</span> <span class="tok-bi">enumerate</span>(ports):
+    <span class="tok-kw">if</span> port == <span class="tok-num">3389</span>:
+        <span class="tok-bi">print</span>(<span class="tok-str">f"risky port found at index {i}, stopping scan"</span>)
+        <span class="tok-kw">break</span>
+    <span class="tok-kw">if</span> port == <span class="tok-num">22</span>:
+        <span class="tok-kw">continue</span>  <span class="tok-com"># skip SSH, already reviewed</span>
+    <span class="tok-bi">print</span>(<span class="tok-str">f"reviewing port {port}"</span>)</code></pre>
+    </div>
+
+    <h2 id="examples">Practical examples</h2>
+    <h3>Processing log files line by line</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>parse_log.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">with</span> <span class="tok-bi">open</span>(<span class="tok-str">"/var/log/app/error.log"</span>) <span class="tok-kw">as</span> f:
+    <span class="tok-kw">for</span> line <span class="tok-kw">in</span> f:
+        <span class="tok-kw">if</span> <span class="tok-str">"ERROR"</span> <span class="tok-kw">in</span> line:
+            <span class="tok-bi">print</span>(line.strip())</code></pre>
+    </div>
+
+    <h3>Reading an inventory file</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>inventory_loop.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>inventory = [
+    {<span class="tok-str">"host"</span>: <span class="tok-str">"db-01"</span>, <span class="tok-str">"role"</span>: <span class="tok-str">"database"</span>},
+    {<span class="tok-str">"host"</span>: <span class="tok-str">"web-01"</span>, <span class="tok-str">"role"</span>: <span class="tok-str">"frontend"</span>},
+]
+
+<span class="tok-kw">for</span> node <span class="tok-kw">in</span> inventory:
+    <span class="tok-bi">print</span>(<span class="tok-str">f"{node['host']} -> {node['role']}"</span>)</code></pre>
+    </div>
+
+    <h3>Monitoring Kubernetes pods</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>pod_status.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>pods = {<span class="tok-str">"api-7d9f"</span>: <span class="tok-str">"Running"</span>, <span class="tok-str">"api-3a1c"</span>: <span class="tok-str">"CrashLoopBackOff"</span>, <span class="tok-str">"worker-2b"</span>: <span class="tok-str">"Running"</span>}
+
+<span class="tok-kw">for</span> pod_name, status <span class="tok-kw">in</span> pods.items():
+    <span class="tok-kw">if</span> status != <span class="tok-str">"Running"</span>:
+        <span class="tok-bi">print</span>(<span class="tok-str">f"unhealthy pod: {pod_name} ({status})"</span>)</code></pre>
+    </div>
+
+    <h3>Looping over AWS EC2 instances</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>ec2_loop.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>instances = [
+    {<span class="tok-str">"id"</span>: <span class="tok-str">"i-0a1b2c"</span>, <span class="tok-str">"state"</span>: <span class="tok-str">"running"</span>, <span class="tok-str">"type"</span>: <span class="tok-str">"t3.medium"</span>},
+    {<span class="tok-str">"id"</span>: <span class="tok-str">"i-0d4e5f"</span>, <span class="tok-str">"state"</span>: <span class="tok-str">"stopped"</span>, <span class="tok-str">"type"</span>: <span class="tok-str">"t3.large"</span>},
+]
+
+running_count = <span class="tok-num">0</span>
+<span class="tok-kw">for</span> instance <span class="tok-kw">in</span> instances:
+    <span class="tok-kw">if</span> instance[<span class="tok-str">"state"</span>] == <span class="tok-str">"running"</span>:
+        running_count += <span class="tok-num">1</span>
+
+<span class="tok-bi">print</span>(<span class="tok-str">f"{running_count} of {len(instances)} instances running"</span>)</code></pre>
+    </div>
+
+    <div class="callout callout--warning">
+      <div class="callout__title">Warning</div>
+      <p>A <code>while</code> loop with no guaranteed exit condition will hang your script (or your CI job) indefinitely — always ensure the loop variable moves toward the exit condition.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Given a list of five hostnames, print each one prefixed with its position (<code>1: web-01</code>, etc.) using <code>enumerate</code>.</li>
+      <li>Loop through a dictionary of <code>{service_name: is_running}</code> and print only the services that are down.</li>
+      <li>Write a <code>while</code> loop that simulates retrying a failed deployment up to 4 times, printing each attempt number.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What does `continue` do inside a for loop?",
+          options: ["Exits the loop entirely", "Skips to the next iteration", "Pauses the loop", "Restarts the loop from index 0"],
+          correctIndex: 1,
+          explanation: "`continue` skips the rest of the current iteration and moves to the next one."
+        },
+        {
+          question: "What does `enumerate(ports)` give you on each iteration?",
+          options: ["Just the value", "Just the index", "A tuple of (index, value)", "A dictionary"],
+          correctIndex: 2,
+          explanation: "enumerate() yields (index, value) pairs, commonly unpacked as `for i, val in enumerate(...)`."
+        },
+        {
+          question: "What's the main risk of a `while` loop over a `for` loop?",
+          options: ["while loops can't use break", "while loops can run forever if the condition never becomes false", "while loops can't access variables", "while loops are always slower"],
+          correctIndex: 1,
+          explanation: "Unlike a for loop over a fixed collection, a while loop keeps running until its condition is false — if nothing updates that condition, it never stops."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li><code>for</code> loops iterate over collections — the default choice for server lists, log lines, and API results.</li>
+      <li><code>while</code> loops repeat based on a condition — useful for retries and polling.</li>
+      <li><code>break</code>, <code>continue</code>, and <code>enumerate()</code> give you fine control over iteration.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 03 of 07</span><span>Reading time: ~10 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Functions — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="functions" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/functions.html · module 04</div>
+    <h1>Functions</h1>
+    <p>A function packages a task — check disk space, restart a service, validate an IP — into something you can name, reuse, and test in isolation. Once operational logic lives in functions instead of a wall of top-to-bottom script, it becomes something you can build a real automation tool out of.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>Define a function with <code>def</code>, a name, and a parameter list. Whatever the function computes is handed back to the caller with <code>return</code> — a function that doesn't explicitly return anything returns <code>None</code>.</p>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>functions_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">greet_engineer</span>(name, shift=<span class="tok-str">"day"</span>):
+    <span class="tok-kw">return</span> <span class="tok-str">f"Welcome {name}, you're on the {shift} shift."</span>
+
+<span class="tok-bi">print</span>(greet_engineer(<span class="tok-str">"Priya"</span>))
+<span class="tok-bi">print</span>(greet_engineer(<span class="tok-str">"Marcus"</span>, shift=<span class="tok-str">"night"</span>))</code></pre>
+    </div>
+    <p><code>shift="day"</code> is a default parameter — callers can omit it. Use <code>*args</code> and <code>**kwargs</code> when a function needs to accept a variable number of arguments.</p>
+
+    <h2 id="library">Reusable automation functions</h2>
+    <p>Below is a small library of the kind of functions you'll write constantly in an infra or security role. Each does one job and returns a value the caller can act on.</p>
+
+    <h3><code>check_disk_space()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>check_disk_space.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">check_disk_space</span>(used_gb, total_gb, threshold=<span class="tok-num">85</span>):
+    <span class="tok-str">"""Return True if disk usage percentage is below threshold."""</span>
+    percent_used = (used_gb / total_gb) * <span class="tok-num">100</span>
+    <span class="tok-kw">return</span> percent_used &lt; threshold
+
+<span class="tok-bi">print</span>(check_disk_space(<span class="tok-num">72</span>, <span class="tok-num">100</span>))   <span class="tok-com"># True</span>
+<span class="tok-bi">print</span>(check_disk_space(<span class="tok-num">91</span>, <span class="tok-num">100</span>))   <span class="tok-com"># False</span></code></pre>
+    </div>
+
+    <h3><code>restart_service()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>restart_service.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">restart_service</span>(service_name, max_attempts=<span class="tok-num">3</span>):
+    <span class="tok-kw">for</span> attempt <span class="tok-kw">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1</span>, max_attempts + <span class="tok-num">1</span>):
+        <span class="tok-bi">print</span>(<span class="tok-str">f"[{service_name}] restart attempt {attempt}"</span>)
+        <span class="tok-com"># in real code: subprocess.run(["systemctl", "restart", service_name])</span>
+        success = <span class="tok-kw">True</span>  <span class="tok-com"># placeholder for actual result</span>
+        <span class="tok-kw">if</span> success:
+            <span class="tok-kw">return</span> <span class="tok-kw">True</span>
+    <span class="tok-kw">return</span> <span class="tok-kw">False</span></code></pre>
+    </div>
+
+    <h3><code>deploy_application()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>deploy_application.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">deploy_application</span>(image, replicas=<span class="tok-num">3</span>, namespace=<span class="tok-str">"default"</span>):
+    <span class="tok-bi">print</span>(<span class="tok-str">f"deploying {image} -> namespace={namespace}, replicas={replicas}"</span>)
+    <span class="tok-kw">return</span> {<span class="tok-str">"image"</span>: image, <span class="tok-str">"replicas"</span>: replicas, <span class="tok-str">"namespace"</span>: namespace, <span class="tok-str">"status"</span>: <span class="tok-str">"deployed"</span>}</code></pre>
+    </div>
+
+    <h3><code>validate_yaml()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>validate_yaml.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">import</span> yaml
+
+<span class="tok-kw">def</span> <span class="tok-fn">validate_yaml</span>(path):
+    <span class="tok-kw">try</span>:
+        <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path) <span class="tok-kw">as</span> f:
+            yaml.safe_load(f)
+        <span class="tok-kw">return</span> <span class="tok-kw">True</span>, <span class="tok-str">"valid"</span>
+    <span class="tok-kw">except</span> yaml.YAMLError <span class="tok-kw">as</span> e:
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>, <span class="tok-bi">str</span>(e)</code></pre>
+    </div>
+
+    <h3><code>search_logs()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>search_logs.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">search_logs</span>(path, keyword):
+    matches = []
+    <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path) <span class="tok-kw">as</span> f:
+        <span class="tok-kw">for</span> line_num, line <span class="tok-kw">in</span> <span class="tok-bi">enumerate</span>(f, start=<span class="tok-num">1</span>):
+            <span class="tok-kw">if</span> keyword <span class="tok-kw">in</span> line:
+                matches.append((line_num, line.strip()))
+    <span class="tok-kw">return</span> matches</code></pre>
+    </div>
+
+    <h3><code>validate_ip()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>validate_ip.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">import</span> ipaddress
+
+<span class="tok-kw">def</span> <span class="tok-fn">validate_ip</span>(address):
+    <span class="tok-kw">try</span>:
+        ipaddress.ip_address(address)
+        <span class="tok-kw">return</span> <span class="tok-kw">True</span>
+    <span class="tok-kw">except</span> ValueError:
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>
+
+<span class="tok-bi">print</span>(validate_ip(<span class="tok-str">"10.0.4.12"</span>))   <span class="tok-com"># True</span>
+<span class="tok-bi">print</span>(validate_ip(<span class="tok-str">"999.1.1.1"</span>))  <span class="tok-com"># False</span></code></pre>
+    </div>
+
+    <h3><code>generate_report()</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>generate_report.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">generate_report</span>(findings):
+    <span class="tok-str">"""findings: list of dicts like {'host': ..., 'issue': ..., 'severity': ...}"""</span>
+    lines = [<span class="tok-str">f"Security Report — {len(findings)} findings"</span>]
+    <span class="tok-kw">for</span> f <span class="tok-kw">in</span> findings:
+        lines.append(<span class="tok-str">f"  [{f['severity'].upper()}] {f['host']}: {f['issue']}"</span>)
+    <span class="tok-kw">return</span> <span class="tok-str">"\n"</span>.join(lines)</code></pre>
+    </div>
+
+    <div class="callout callout--tip">
+      <div class="callout__title">Tip</div>
+      <p>Write a docstring (the triple-quoted string right under <code>def</code>) for every function that isn't trivially obvious — it's the first thing a teammate reads before touching your automation code.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Write <code>is_port_open(port, allowed_ports)</code> that returns <code>True</code>/<code>False</code> based on membership in a list.</li>
+      <li>Write <code>calculate_uptime_percent(total_minutes, downtime_minutes)</code> and return the result rounded to 2 decimal places.</li>
+      <li>Write <code>build_backup_filename(hostname, date_str)</code> that returns a string like <code>"web-01_backup_2026-08-06.tar.gz"</code>.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What does a Python function return if it has no explicit `return` statement?",
+          options: ["0", "An empty string", "None", "It raises an error"],
+          correctIndex: 2,
+          explanation: "A function without a return statement implicitly returns None."
+        },
+        {
+          question: "In `def restart_service(service_name, max_attempts=3):`, what is `max_attempts=3`?",
+          options: ["A required positional argument", "A default parameter value", "A return type hint", "A global variable"],
+          correctIndex: 1,
+          explanation: "Assigning a value in the parameter list makes it optional — callers can override or omit it."
+        },
+        {
+          question: "Why wrap validate_ip()'s logic in a try/except?",
+          options: ["To make the function run faster", "Because ipaddress.ip_address() raises ValueError on invalid input, which we want to catch instead of crashing", "try/except is required for all functions", "To avoid using return statements"],
+          correctIndex: 1,
+          explanation: "Catching the specific exception lets the function report False instead of crashing the whole script on bad input."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li>Functions turn one-off logic into named, reusable, testable units.</li>
+      <li>Default parameters and <code>*args</code>/<code>**kwargs</code> make functions flexible for different callers.</li>
+      <li>A small library of well-named functions (<code>check_disk_space</code>, <code>validate_ip</code>, etc.) is the foundation most automation tools are built from.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 04 of 07</span><span>Reading time: ~12 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

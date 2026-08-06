@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Constructors — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="constructors" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/constructors.html · module 06</div>
+    <h1>Constructors</h1>
+    <p>The constructor is the code that runs the moment an object is created — it's where you set up whatever that object needs to exist in a valid state, before anyone calls a method on it.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>In Python, the constructor is the <code>__init__()</code> method. Python calls it automatically when you write <code>ClassName(...)</code>; you never call <code>__init__()</code> directly yourself. Its job is to set initial attribute values on <code>self</code>.</p>
+
+    <h2 id="default-vs-param">Default vs. parameterized constructors</h2>
+    <p>Python doesn't have a separate "default constructor" syntax the way some languages do — instead, you give <code>__init__()</code> parameters, and give those parameters default values for anything optional.</p>
+    <div class="code-block">
+      <div class="code-block__header"><span>constructor_styles.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Server</span>:
+    <span class="tok-com"># "default" behavior comes from giving every param a default</span>
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, hostname=<span class="tok-str">"unnamed-host"</span>, role=<span class="tok-str">"web"</span>):
+        <span class="tok-bi">self</span>.hostname = hostname
+        <span class="tok-bi">self</span>.role = role
+
+<span class="tok-com"># uses the defaults</span>
+generic = Server()
+
+<span class="tok-com"># parameterized: caller supplies real values</span>
+db01 = Server(<span class="tok-str">"db-01"</span>, <span class="tok-str">"database"</span>)</code></pre>
+    </div>
+
+    <h2 id="server-objects">Constructing server objects</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>server_constructor.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Server</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, hostname, ip_address, cpu_cores=<span class="tok-num">2</span>, memory_gb=<span class="tok-num">4</span>):
+        <span class="tok-bi">self</span>.hostname = hostname
+        <span class="tok-bi">self</span>.ip_address = ip_address
+        <span class="tok-bi">self</span>.cpu_cores = cpu_cores
+        <span class="tok-bi">self</span>.memory_gb = memory_gb
+        <span class="tok-bi">self</span>.tags = []  <span class="tok-com"># every server starts with an empty tag list</span>
+
+api01 = Server(<span class="tok-str">"api-01"</span>, <span class="tok-str">"10.0.2.5"</span>, cpu_cores=<span class="tok-num">4</span>, memory_gb=<span class="tok-num">8</span>)
+<span class="tok-bi">print</span>(api01.hostname, api01.cpu_cores)</code></pre>
+    </div>
+    <div class="callout callout--warning">
+      <div class="callout__title">Warning</div>
+      <p>Never use a mutable default like <code>tags=[]</code> as a parameter default — Python creates that list <em>once</em> and every instance would share it. Assign the empty list inside <code>__init__</code>, as shown above, not in the parameter list.</p>
+    </div>
+
+    <h2 id="cloud-resources">Constructing cloud resources</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>cloud_resource_constructor.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">CloudResource</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, resource_id, resource_type, region, tags=<span class="tok-kw">None</span>):
+        <span class="tok-bi">self</span>.resource_id = resource_id
+        <span class="tok-bi">self</span>.resource_type = resource_type
+        <span class="tok-bi">self</span>.region = region
+        <span class="tok-bi">self</span>.tags = tags <span class="tok-kw">if</span> tags <span class="tok-kw">is</span> <span class="tok-kw">not</span> <span class="tok-kw">None</span> <span class="tok-kw">else</span> {}
+
+bucket = CloudResource(<span class="tok-str">"company-backups-2026"</span>, <span class="tok-str">"s3_bucket"</span>, <span class="tok-str">"us-east-1"</span>,
+                        tags={<span class="tok-str">"env"</span>: <span class="tok-str">"prod"</span>})</code></pre>
+    </div>
+    <p>This is the correct pattern for a mutable default: accept <code>None</code> and build the real default inside the constructor body.</p>
+
+    <h2 id="monitoring-alerts">Constructing monitoring alerts</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>monitoring_alert_constructor.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">import</span> datetime
+
+<span class="tok-kw">class</span> <span class="tok-fn">MonitoringAlert</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, metric, value, threshold, triggered_at=<span class="tok-kw">None</span>):
+        <span class="tok-bi">self</span>.metric = metric
+        <span class="tok-bi">self</span>.value = value
+        <span class="tok-bi">self</span>.threshold = threshold
+        <span class="tok-com"># default the timestamp to "now" if the caller didn't supply one</span>
+        <span class="tok-bi">self</span>.triggered_at = triggered_at <span class="tok-kw">or</span> datetime.datetime.utcnow()
+
+alert = MonitoringAlert(<span class="tok-str">"cpu_percent"</span>, <span class="tok-num">96</span>, <span class="tok-num">90</span>)
+<span class="tok-bi">print</span>(<span class="tok-str">f"{alert.metric} breached at {alert.triggered_at}"</span>)</code></pre>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Write a <code>Container</code> constructor that requires <code>image</code> but defaults <code>cpu_limit</code> and <code>memory_limit</code>.</li>
+      <li>Write a <code>Deployment</code> constructor that raises a <code>ValueError</code> if <code>replicas</code> is less than 1.</li>
+      <li>Fix this buggy constructor: <code>def __init__(self, tags=[]): self.tags = tags</code> — explain in a comment why it's buggy.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "Which method is Python's constructor?",
+          options: ["__new__()", "__construct__()", "__init__()", "__start__()"],
+          correctIndex: 2,
+          explanation: "__init__() runs automatically when an object is created and sets up its initial attributes."
+        },
+        {
+          question: "Why is `def __init__(self, tags=[]):` considered a bug?",
+          options: ["Lists can't be constructor parameters", "The empty list is created once and shared across every instance that doesn't pass its own", "It causes a syntax error", "self must always come after tags"],
+          correctIndex: 1,
+          explanation: "Mutable default arguments are evaluated once at function definition time, so every instance without an explicit tags value shares the same list object."
+        },
+        {
+          question: "What is the safe pattern for a mutable default like a dict or list?",
+          options: ["Use tags={} directly in the signature", "Accept tags=None and build the real default inside __init__", "Never allow optional mutable parameters", "Use a global variable instead"],
+          correctIndex: 1,
+          explanation: "Defaulting to None and creating a fresh object inside the constructor body avoids the shared-default bug."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li><code>__init__()</code> is Python's constructor — it runs once, automatically, when an object is created.</li>
+      <li>Give parameters defaults to make a constructor flexible without requiring every caller to specify everything.</li>
+      <li>Never use a mutable object (list, dict) as a default parameter value — default to <code>None</code> and build it inside the method.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 06 of 07</span><span>Reading time: ~9 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

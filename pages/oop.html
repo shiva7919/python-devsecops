@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Object-Oriented Programming — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="oop" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/oop.html · module 05</div>
+    <h1>Object-Oriented Programming</h1>
+    <p>Once your scripts start tracking more than a couple of related values per "thing" — a server's name, IP, status, and role, say — passing them around as separate variables or loose dictionaries gets error-prone. A class lets you define that "thing" once, as a type, and every instance of it behaves consistently.</p>
+
+    <h2 id="why-oop">Why OOP shows up in automation frameworks</h2>
+    <p>Tools like Ansible, Terraform providers, and Kubernetes client libraries are built almost entirely out of classes: a <code>Server</code>, a <code>Deployment</code>, a <code>Pod</code>. Modeling your own automation the same way means every server behaves the same way, every alert has the same shape, and adding a new capability means adding one method instead of hunting down every place a dictionary key is used.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>A class is a blueprint. An <strong>object</strong> (or instance) is a specific thing built from that blueprint. <strong>Attributes</strong> are the data an object holds; <strong>methods</strong> are the functions it can perform on itself.</p>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>oop_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Server</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, hostname, ip_address, role=<span class="tok-str">"web"</span>):
+        <span class="tok-bi">self</span>.hostname = hostname
+        <span class="tok-bi">self</span>.ip_address = ip_address
+        <span class="tok-bi">self</span>.role = role
+        <span class="tok-bi">self</span>.is_online = <span class="tok-kw">True</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">describe</span>(<span class="tok-bi">self</span>):
+        status = <span class="tok-str">"online"</span> <span class="tok-kw">if</span> <span class="tok-bi">self</span>.is_online <span class="tok-kw">else</span> <span class="tok-str">"offline"</span>
+        <span class="tok-kw">return</span> <span class="tok-str">f"{self.hostname} ({self.ip_address}) — {self.role}, {status}"</span>
+
+web01 = Server(<span class="tok-str">"web-01"</span>, <span class="tok-str">"10.0.1.10"</span>)
+<span class="tok-bi">print</span>(web01.describe())</code></pre>
+    </div>
+
+    <h2 id="examples">Modeling infrastructure as classes</h2>
+
+    <h3><code>Container</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>container.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Container</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, image, cpu_limit=<span class="tok-str">"500m"</span>, memory_limit=<span class="tok-str">"256Mi"</span>):
+        <span class="tok-bi">self</span>.image = image
+        <span class="tok-bi">self</span>.cpu_limit = cpu_limit
+        <span class="tok-bi">self</span>.memory_limit = memory_limit
+        <span class="tok-bi">self</span>.status = <span class="tok-str">"pending"</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">start</span>(<span class="tok-bi">self</span>):
+        <span class="tok-bi">self</span>.status = <span class="tok-str">"running"</span>
+        <span class="tok-kw">return</span> <span class="tok-str">f"{self.image} is now running"</span></code></pre>
+    </div>
+
+    <h3><code>Deployment</code> and <code>KubernetesCluster</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>deployment.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Deployment</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, name, replicas, image):
+        <span class="tok-bi">self</span>.name = name
+        <span class="tok-bi">self</span>.replicas = replicas
+        <span class="tok-bi">self</span>.image = image
+
+    <span class="tok-kw">def</span> <span class="tok-fn">scale</span>(<span class="tok-bi">self</span>, new_replica_count):
+        <span class="tok-bi">self</span>.replicas = new_replica_count
+        <span class="tok-kw">return</span> <span class="tok-str">f"{self.name} scaled to {new_replica_count} replicas"</span>
+
+
+<span class="tok-kw">class</span> <span class="tok-fn">KubernetesCluster</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, name, region):
+        <span class="tok-bi">self</span>.name = name
+        <span class="tok-bi">self</span>.region = region
+        <span class="tok-bi">self</span>.deployments = []
+
+    <span class="tok-kw">def</span> <span class="tok-fn">add_deployment</span>(<span class="tok-bi">self</span>, deployment):
+        <span class="tok-bi">self</span>.deployments.append(deployment)
+
+    <span class="tok-kw">def</span> <span class="tok-fn">total_replicas</span>(<span class="tok-bi">self</span>):
+        <span class="tok-kw">return</span> <span class="tok-bi">sum</span>(d.replicas <span class="tok-kw">for</span> d <span class="tok-kw">in</span> <span class="tok-bi">self</span>.deployments)</code></pre>
+    </div>
+
+    <h3><code>FirewallRule</code> and <code>SecurityAlert</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>security_classes.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">FirewallRule</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, port, protocol, source_cidr, action=<span class="tok-str">"ALLOW"</span>):
+        <span class="tok-bi">self</span>.port = port
+        <span class="tok-bi">self</span>.protocol = protocol
+        <span class="tok-bi">self</span>.source_cidr = source_cidr
+        <span class="tok-bi">self</span>.action = action
+
+    <span class="tok-kw">def</span> <span class="tok-fn">is_overly_permissive</span>(<span class="tok-bi">self</span>):
+        <span class="tok-kw">return</span> <span class="tok-bi">self</span>.source_cidr == <span class="tok-str">"0.0.0.0/0"</span> <span class="tok-kw">and</span> <span class="tok-bi">self</span>.action == <span class="tok-str">"ALLOW"</span>
+
+
+<span class="tok-kw">class</span> <span class="tok-fn">SecurityAlert</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, source_ip, severity, description):
+        <span class="tok-bi">self</span>.source_ip = source_ip
+        <span class="tok-bi">self</span>.severity = severity
+        <span class="tok-bi">self</span>.description = description
+        <span class="tok-bi">self</span>.acknowledged = <span class="tok-kw">False</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">acknowledge</span>(<span class="tok-bi">self</span>):
+        <span class="tok-bi">self</span>.acknowledged = <span class="tok-kw">True</span></code></pre>
+    </div>
+
+    <h3><code>Pipeline</code> and <code>MonitoringAlert</code></h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>pipeline_and_alerts.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Pipeline</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, name, stages):
+        <span class="tok-bi">self</span>.name = name
+        <span class="tok-bi">self</span>.stages = stages
+        <span class="tok-bi">self</span>.current_stage = <span class="tok-num">0</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">advance</span>(<span class="tok-bi">self</span>):
+        <span class="tok-kw">if</span> <span class="tok-bi">self</span>.current_stage &lt; <span class="tok-bi">len</span>(<span class="tok-bi">self</span>.stages) - <span class="tok-num">1</span>:
+            <span class="tok-bi">self</span>.current_stage += <span class="tok-num">1</span>
+        <span class="tok-kw">return</span> <span class="tok-bi">self</span>.stages[<span class="tok-bi">self</span>.current_stage]
+
+
+<span class="tok-kw">class</span> <span class="tok-fn">MonitoringAlert</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, metric, value, threshold):
+        <span class="tok-bi">self</span>.metric = metric
+        <span class="tok-bi">self</span>.value = value
+        <span class="tok-bi">self</span>.threshold = threshold
+
+    <span class="tok-kw">def</span> <span class="tok-fn">is_breached</span>(<span class="tok-bi">self</span>):
+        <span class="tok-kw">return</span> <span class="tok-bi">self</span>.value &gt; <span class="tok-bi">self</span>.threshold</code></pre>
+    </div>
+
+    <div class="callout callout--note">
+      <div class="callout__title">Note</div>
+      <p><code>self</code> refers to the specific instance a method was called on. It's always the first parameter of an instance method, and Python passes it automatically — you never supply it yourself when calling <code>web01.describe()</code>.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Add a method <code>restart()</code> to the <code>Server</code> class that sets <code>is_online</code> to <code>True</code> and returns a confirmation string.</li>
+      <li>Write a <code>Deployment.rollback()</code> method that resets <code>replicas</code> to a stored <code>previous_replicas</code> value.</li>
+      <li>Extend <code>SecurityAlert</code> with a method <code>escalate()</code> that upgrades <code>severity</code> from <code>"medium"</code> to <code>"high"</code>.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What is `self` in a class method?",
+          options: ["A reserved keyword with no purpose", "A reference to the specific object the method was called on", "The class name itself", "A global variable shared by all instances"],
+          correctIndex: 1,
+          explanation: "self lets a method read and modify the attributes of the particular instance it's operating on."
+        },
+        {
+          question: "Given `class FirewallRule` above, what does `rule.is_overly_permissive()` check?",
+          options: ["Whether the port is below 1024", "Whether the source is 0.0.0.0/0 and the action is ALLOW", "Whether the protocol is TCP", "Whether the rule has ever been used"],
+          correctIndex: 1,
+          explanation: "It flags rules that allow traffic from anywhere on the internet — a common misconfiguration."
+        },
+        {
+          question: "Why model a KubernetesCluster as a class instead of a dictionary of deployments?",
+          options: ["Classes are always faster to execute", "It groups related data and behavior (like total_replicas()) together under one consistent interface", "Dictionaries can't store lists", "It's required by Python syntax"],
+          correctIndex: 1,
+          explanation: "Classes bundle state and the operations on that state, so every KubernetesCluster object behaves the same way."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li>Classes are blueprints; objects are specific instances built from them.</li>
+      <li>Attributes hold an object's data; methods define what it can do.</li>
+      <li>Automation frameworks lean on OOP so that every server, pod, or alert behaves consistently.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 05 of 07</span><span>Reading time: ~13 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

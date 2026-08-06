@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variables — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="variables" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/variables.html · module 01</div>
+    <h1>Variables</h1>
+    <p>A variable is a name bound to a value in memory. In infrastructure code, variables are how you hold onto the things you're operating on: a hostname, an IP address, a threshold, a config value pulled from the environment.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>Python is dynamically typed: you don't declare a variable's type up front, and a name can be rebound to a value of a different type later. The type lives with the value, not the name. This is convenient for scripting but means it's on you to keep track of what a variable actually holds — especially when that value came from a config file, an API response, or an environment variable, all of which typically arrive as strings.</p>
+
+    <div class="disclosure">
+      <button class="disclosure__trigger">Diagram: name → value binding</button>
+      <div class="disclosure__panel">
+        <svg viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+          <style>
+            .lbl{font-family:monospace;font-size:13px;fill:var(--text,#12161c);}
+            .box{fill:none;stroke:#1f9d63;stroke-width:1.5;rx:4;}
+            .arrow{stroke:#5b6472;stroke-width:1.5;fill:none;marker-end:url(#ah);}
+          </style>
+          <defs>
+            <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#5b6472"/>
+            </marker>
+          </defs>
+          <rect x="20" y="55" width="150" height="40" class="box"/>
+          <text x="35" y="80" class="lbl">hostname</text>
+          <path d="M170,75 L260,75" class="arrow"/>
+          <rect x="260" y="55" width="280" height="40" class="box"/>
+          <text x="275" y="80" class="lbl">"web-prod-01.internal"</text>
+          <text x="20" y="40" class="lbl" fill="#5b6472" font-size="11">name (in your script)</text>
+          <text x="260" y="40" class="lbl" fill="#5b6472" font-size="11">object in memory (str)</text>
+        </svg>
+      </div>
+    </div>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>variables_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-com"># assignment: name = value</span>
+hostname = <span class="tok-str">"web-prod-01"</span>
+port = <span class="tok-num">8080</span>
+is_healthy = <span class="tok-kw">True</span>
+cpu_load = <span class="tok-num">0.42</span>
+
+<span class="tok-com"># multiple assignment</span>
+region, zone = <span class="tok-str">"us-east-1"</span>, <span class="tok-str">"us-east-1a"</span>
+
+<span class="tok-com"># type check</span>
+<span class="tok-bi">print</span>(<span class="tok-bi">type</span>(port))   <span class="tok-com"># &lt;class 'int'&gt;</span></code></pre>
+    </div>
+
+    <h3>Naming rules</h3>
+    <ul>
+      <li>Letters, digits, and underscores only — can't start with a digit.</li>
+      <li>Case-sensitive: <code>server_ip</code> and <code>Server_IP</code> are different names.</li>
+      <li>Convention: <code>snake_case</code> for variables, <code>UPPER_SNAKE_CASE</code> for constants.</li>
+    </ul>
+
+    <h2 id="core-types">Core data types</h2>
+    <table>
+      <thead><tr><th>Type</th><th>Example</th><th>Common infra use</th></tr></thead>
+      <tbody>
+        <tr><td><code>str</code></td><td><code>"10.0.4.12"</code></td><td>hostnames, IPs, env values, config paths</td></tr>
+        <tr><td><code>int</code></td><td><code>8080</code></td><td>ports, retry counts, exit codes</td></tr>
+        <tr><td><code>float</code></td><td><code>0.87</code></td><td>CPU load, disk usage %, latency</td></tr>
+        <tr><td><code>bool</code></td><td><code>True</code></td><td>health flags, feature toggles</td></tr>
+        <tr><td><code>list</code></td><td><code>["web-01", "web-02"]</code></td><td>server fleets, IP ranges</td></tr>
+        <tr><td><code>dict</code></td><td><code>{"env": "prod"}</code></td><td>parsed JSON/YAML config</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="devops-examples">DevOps examples</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>devops_variables.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>server_name = <span class="tok-str">"web-prod-03"</span>
+docker_image = <span class="tok-str">"myapp:2.4.1"</span>
+k8s_namespace = <span class="tok-str">"payments-prod"</span>
+replica_count = <span class="tok-num">6</span>
+deployment_ready = <span class="tok-kw">False</span></code></pre>
+    </div>
+
+    <h2 id="security-examples">Security examples</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>security_variables.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>failed_login_attempts = <span class="tok-num">3</span>
+max_allowed_attempts = <span class="tok-num">5</span>
+account_locked = <span class="tok-kw">False</span>
+firewall_rule = <span class="tok-str">"ALLOW 443/tcp FROM 0.0.0.0/0"</span>
+scanned_cve_count = <span class="tok-num">12</span></code></pre>
+    </div>
+
+    <h2 id="cloud-examples">Cloud examples</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>cloud_variables.py</span><button class="copy-btn">copy</button></div>
+      <pre><code>aws_region = <span class="tok-str">"us-east-1"</span>
+instance_type = <span class="tok-str">"t3.medium"</span>
+bucket_name = <span class="tok-str">"company-backups-2026"</span>
+monthly_budget_usd = <span class="tok-num">4200.00</span></code></pre>
+    </div>
+
+    <h2 id="env-vars">Environment variables</h2>
+    <p>Config values that change per environment (dev/staging/prod) are almost never hardcoded — they're read from the environment at runtime using the <code>os</code> module.</p>
+    <div class="code-block">
+      <div class="code-block__header"><span>read_env_config.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">import</span> os
+
+<span class="tok-com"># .get() with a default avoids a crash if the var isn't set</span>
+db_host = os.environ.get(<span class="tok-str">"DB_HOST"</span>, <span class="tok-str">"localhost"</span>)
+log_level = os.environ.get(<span class="tok-str">"LOG_LEVEL"</span>, <span class="tok-str">"INFO"</span>)
+api_key = os.environ.get(<span class="tok-str">"API_KEY"</span>)  <span class="tok-com"># None if unset — check before use</span>
+
+<span class="tok-kw">if</span> api_key <span class="tok-kw">is</span> <span class="tok-kw">None</span>:
+    <span class="tok-bi">print</span>(<span class="tok-str">"warning: API_KEY not set"</span>)</code></pre>
+    </div>
+    <div class="callout callout--warning">
+      <div class="callout__title">Warning</div>
+      <p>Environment variables are always strings. <code>os.environ.get("MAX_RETRIES")</code> returns <code>"5"</code>, not <code>5</code> — cast explicitly with <code>int()</code> before doing arithmetic on it.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Create variables for a server's <code>hostname</code>, <code>ip_address</code>, and <code>is_online</code> status, then print all three in one formatted string.</li>
+      <li>Read a <code>DEPLOY_ENV</code> environment variable with a default of <code>"development"</code>, and print which environment the script believes it's running in.</li>
+      <li>Given <code>disk_used_gb = 87.5</code> and <code>disk_total_gb = 100</code>, compute and print the percentage used.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What does os.environ.get('PORT') return if PORT is not set and no default is given?",
+          options: ["An empty string", "0", "None", "A KeyError is raised"],
+          correctIndex: 2,
+          explanation: ".get() without a default returns None when the key is missing."
+        },
+        {
+          question: "Which type will os.environ.get('MAX_RETRIES') return, assuming MAX_RETRIES=5 is set in the shell?",
+          options: ["int", "str", "float", "bool"],
+          correctIndex: 1,
+          explanation: "Environment variables are always strings — you must cast with int() to use them as numbers."
+        },
+        {
+          question: "Which of these is a valid Python variable name?",
+          options: ["2nd_server", "server-name", "server_name", "server name"],
+          correctIndex: 2,
+          explanation: "Variable names can't start with a digit or contain hyphens/spaces — underscores are the separator."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li>Variables bind a name to a value; Python infers the type from the value.</li>
+      <li>Infra scripts lean heavily on <code>str</code>, <code>int</code>, <code>float</code>, and <code>bool</code> for hostnames, ports, metrics, and flags.</li>
+      <li>Environment variables arrive as strings — always cast before doing math on them.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 01 of 07</span><span>Reading time: ~12 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessment — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="assessment" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/assessment.html</div>
+    <h1>Final Assessment</h1>
+    <p>A 10-question check spanning every module — variables through generators. This isn't gated: retake it as many times as you like. Treat a score under 80% as a signal to revisit the module the missed question came from, not a failure.</p>
+
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What will os.environ.get('MAX_RETRIES', '3') return if MAX_RETRIES was never set in the shell?",
+          options: ["3 (as an int)", "'3' (as a string)", "None", "An error is raised"],
+          correctIndex: 1,
+          explanation: "The default value '3' is returned as-is, and environment values are always strings."
+        },
+        {
+          question: "Which expression correctly checks that a service is both stopped AND under the retry limit?",
+          options: ["status == 'stopped' or attempts < max_attempts", "status == 'stopped' and attempts < max_attempts", "status != 'stopped' and attempts < max_attempts", "not status == 'stopped'"],
+          correctIndex: 1,
+          explanation: "`and` requires both conditions to hold — exactly what's needed to decide whether a retry is warranted."
+        },
+        {
+          question: "Which loop construct is generally preferred for iterating over a fixed list of servers?",
+          options: ["while", "for", "goto", "repeat"],
+          correctIndex: 1,
+          explanation: "for loops are the natural fit for iterating over a known, finite collection."
+        },
+        {
+          question: "What does `enumerate(items)` yield on each pass?",
+          options: ["Just the item", "(index, item) pairs", "Just the index", "A copy of the whole list"],
+          correctIndex: 1,
+          explanation: "enumerate() pairs each item with its position, commonly unpacked as `for i, item in enumerate(items)`."
+        },
+        {
+          question: "What does a function return if it has no explicit return statement?",
+          options: ["0", "An empty string", "None", "The last evaluated expression"],
+          correctIndex: 2,
+          explanation: "Without an explicit return, Python functions implicitly return None."
+        },
+        {
+          question: "In OOP terms, what is `self` inside an instance method?",
+          options: ["The class itself", "A reference to the specific instance the method was called on", "A required import", "A built-in decorator"],
+          correctIndex: 1,
+          explanation: "self gives a method access to the attributes of the particular object it's operating on."
+        },
+        {
+          question: "Which method is Python's constructor, run automatically when an object is created?",
+          options: ["__new__()", "__init__()", "__build__()", "__create__()"],
+          correctIndex: 1,
+          explanation: "__init__() runs immediately after an object is instantiated to set up its initial state."
+        },
+        {
+          question: "Why is `def __init__(self, tags=[]):` considered a bug?",
+          options: ["It causes a syntax error", "The default list is created once and shared across every instance that doesn't override it", "Lists can't be default arguments at all", "self must come after tags"],
+          correctIndex: 1,
+          explanation: "Mutable default arguments are evaluated once at definition time and shared across calls — a classic Python pitfall."
+        },
+        {
+          question: "What is the main advantage of a generator over building a full list for a large log file?",
+          options: ["Generators are always faster to write", "Generators hold roughly one item in memory at a time instead of the entire dataset", "Generators can only read text files", "Lists can't be looped over"],
+          correctIndex: 1,
+          explanation: "Lazy evaluation is the core benefit — memory use stays roughly constant regardless of dataset size."
+        },
+        {
+          question: "What happens when you iterate a generator a second time after it's been fully consumed?",
+          options: ["It restarts automatically", "It yields nothing further", "It raises a StopIteration visibly to the user every time", "It re-reads the source file from scratch"],
+          correctIndex: 1,
+          explanation: "Generators are single-use — once exhausted, a fresh generator must be created to iterate again."
+        }
+      ];
+    </script>
+
+    <div class="callout callout--note" style="margin-top:2rem;">
+      <div class="callout__title">Note</div>
+      <p>Completing this page marks the assessment module as visited in your sidebar progress tracker. Progress is stored locally in your browser and isn't shared or submitted anywhere.</p>
+    </div>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Final module</span><span>10 questions</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

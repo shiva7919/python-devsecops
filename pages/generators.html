@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generators — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="generators" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/generators.html · module 07</div>
+    <h1>Generators</h1>
+    <p>A 40GB log file will not fit in memory as a Python list. A generator lets you process it one line at a time instead, holding almost nothing in memory regardless of how large the underlying data is. This is the difference between a script that works in the demo and one that survives production log volumes.</p>
+
+    <h2 id="theory">Theory</h2>
+    <p>A normal function computes its entire return value before handing it back. A <strong>generator function</strong> — one that uses <code>yield</code> instead of <code>return</code> — produces values one at a time, pausing after each <code>yield</code> until the caller asks for the next one. This is <strong>lazy evaluation</strong>: nothing is computed until it's actually needed.</p>
+
+    <h2 id="syntax">Syntax</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>generators_syntax.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">countdown</span>(n):
+    <span class="tok-kw">while</span> n &gt; <span class="tok-num">0</span>:
+        <span class="tok-kw">yield</span> n
+        n -= <span class="tok-num">1</span>
+
+<span class="tok-kw">for</span> value <span class="tok-kw">in</span> countdown(<span class="tok-num">3</span>):
+    <span class="tok-bi">print</span>(value)   <span class="tok-com"># 3, 2, 1 — computed one at a time</span></code></pre>
+    </div>
+    <p>Calling <code>countdown(3)</code> doesn't run the function body at all — it returns a generator object. The body only executes as the loop pulls values, one <code>yield</code> at a time.</p>
+
+    <h2 id="memory">Memory: list comprehension vs. generator</h2>
+    <div class="code-block">
+      <div class="code-block__header"><span>memory_comparison.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-com"># builds the entire list in memory before returning — fine for small n</span>
+squares_list = [x * x <span class="tok-kw">for</span> x <span class="tok-kw">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1000000</span>)]
+
+<span class="tok-com"># produces one value at a time — near-constant memory regardless of n</span>
+squares_gen = (x * x <span class="tok-kw">for</span> x <span class="tok-kw">in</span> <span class="tok-bi">range</span>(<span class="tok-num">1000000</span>))</code></pre>
+    </div>
+    <div class="callout callout--tip">
+      <div class="callout__title">Tip</div>
+      <p>Swapping square brackets <code>[]</code> for parentheses <code>()</code> in a comprehension turns it into a generator expression — no <code>yield</code> required for simple cases.</p>
+    </div>
+
+    <h2 id="examples">Practical examples</h2>
+
+    <h3>Streaming a large log file</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>stream_logs.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">stream_errors</span>(path):
+    <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path) <span class="tok-kw">as</span> f:
+        <span class="tok-kw">for</span> line <span class="tok-kw">in</span> f:
+            <span class="tok-kw">if</span> <span class="tok-str">"ERROR"</span> <span class="tok-kw">in</span> line:
+                <span class="tok-kw">yield</span> line.strip()
+
+<span class="tok-com"># only one line is ever held in memory at a time, even for a 40GB file</span>
+<span class="tok-kw">for</span> error_line <span class="tok-kw">in</span> stream_errors(<span class="tok-str">"/var/log/app/prod.log"</span>):
+    <span class="tok-bi">print</span>(error_line)</code></pre>
+    </div>
+
+    <h3>Streaming SIEM events</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>siem_events.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">high_severity_events</span>(events):
+    <span class="tok-str">"""events: any iterable of event dicts, e.g. a paginated API client"""</span>
+    <span class="tok-kw">for</span> event <span class="tok-kw">in</span> events:
+        <span class="tok-kw">if</span> event.get(<span class="tok-str">"severity"</span>) <span class="tok-kw">in</span> (<span class="tok-str">"high"</span>, <span class="tok-str">"critical"</span>):
+            <span class="tok-kw">yield</span> event</code></pre>
+    </div>
+
+    <h3>Reading a huge file in fixed-size chunks</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>chunked_reader.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">read_in_chunks</span>(path, chunk_size=<span class="tok-num">8192</span>):
+    <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path, <span class="tok-str">"rb"</span>) <span class="tok-kw">as</span> f:
+        <span class="tok-kw">while</span> <span class="tok-kw">True</span>:
+            chunk = f.read(chunk_size)
+            <span class="tok-kw">if</span> <span class="tok-kw">not</span> chunk:
+                <span class="tok-kw">break</span>
+            <span class="tok-kw">yield</span> chunk</code></pre>
+    </div>
+
+    <h3>Streaming Kubernetes watch events</h3>
+    <div class="code-block">
+      <div class="code-block__header"><span>k8s_events.py</span><button class="copy-btn">copy</button></div>
+      <pre><code><span class="tok-kw">def</span> <span class="tok-fn">pod_restart_events</span>(watch_stream):
+    <span class="tok-str">"""watch_stream: an iterable yielding raw k8s event dicts"""</span>
+    <span class="tok-kw">for</span> event <span class="tok-kw">in</span> watch_stream:
+        <span class="tok-kw">if</span> event[<span class="tok-str">"type"</span>] == <span class="tok-str">"MODIFIED"</span> <span class="tok-kw">and</span> event[<span class="tok-str">"object"</span>].get(<span class="tok-str">"restart_count"</span>, <span class="tok-num">0</span>) &gt; <span class="tok-num">0</span>:
+            <span class="tok-kw">yield</span> event</code></pre>
+    </div>
+
+    <div class="callout callout--note">
+      <div class="callout__title">Note</div>
+      <p>A generator can only be iterated once — once exhausted, looping over it again yields nothing. If you need to process the same data twice, materialize it into a list, or re-create the generator.</p>
+    </div>
+
+    <h2 id="exercises">Exercises</h2>
+    <ol>
+      <li>Write a generator <code>tail_matching(path, keyword)</code> that yields only the lines from a file containing a given keyword.</li>
+      <li>Write a generator expression that yields the CPU load values from a list of server dicts that exceed 80%.</li>
+      <li>Explain, in a code comment, why <code>read_in_chunks()</code> uses <code>"rb"</code> mode and a <code>while True</code> loop instead of iterating the file object directly.</li>
+    </ol>
+
+    <h2 id="quiz">Knowledge check</h2>
+    <div id="quiz-app"></div>
+    <script>
+      var QUIZ_DATA = [
+        {
+          question: "What keyword turns a regular function into a generator function?",
+          options: ["return", "yield", "async", "lazy"],
+          correctIndex: 1,
+          explanation: "Any function containing at least one `yield` becomes a generator function."
+        },
+        {
+          question: "Why prefer a generator over a list when processing a very large log file?",
+          options: ["Generators run faster in every case", "Generators hold roughly one item in memory at a time instead of the whole dataset", "Lists cannot contain strings", "Generators support more file formats"],
+          correctIndex: 1,
+          explanation: "The core benefit is memory: a generator processes one line at a time instead of loading the entire file into memory as a list."
+        },
+        {
+          question: "What happens if you iterate over an already-exhausted generator a second time?",
+          options: ["It restarts from the beginning", "It raises a TypeError", "It yields nothing — the loop body never runs", "It yields the same last value repeatedly"],
+          correctIndex: 2,
+          explanation: "Generators are single-use; once exhausted, further iteration produces no items."
+        }
+      ];
+    </script>
+
+    <h2 id="summary">Summary</h2>
+    <ul>
+      <li>Generators use <code>yield</code> to produce values lazily, one at a time, instead of building an entire result up front.</li>
+      <li>They're the right tool for streaming large log files, event feeds, and API responses without exhausting memory.</li>
+      <li>Generators are single-use — once exhausted, they need to be re-created to iterate again.</li>
+    </ul>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>Module 07 of 07</span><span>Reading time: ~11 min</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

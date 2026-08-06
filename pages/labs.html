@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hands-on Labs — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="labs" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content" style="max-width:860px;">
+    <div class="eyebrow"><span class="status-dot"></span> pages/labs.html</div>
+    <h1>Hands-on Labs</h1>
+    <p>Eight guided labs. Each has a clear objective, prerequisites, numbered steps, the output you should see, and a challenge exercise for once you finish the guided part.</p>
+    <div style="margin-bottom:1.5rem;"><button class="btn btn--ghost btn--sm" id="expand-all">Expand all</button> <button class="btn btn--ghost btn--sm" id="collapse-all">Collapse all</button></div>
+
+    <!-- LAB 1 -->
+    <div class="disclosure is-open">
+      <button class="disclosure__trigger">Lab 01 — Linux Automation</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> automate a routine Linux health check</span></div>
+        <p><b>Prerequisites:</b> Modules 01–04 (Variables through Functions); access to a Linux shell (or WSL).</p>
+        <ol class="step-list">
+          <li>Write a function <code>get_uptime()</code> that runs <code>uptime</code> via <code>subprocess.run</code> and returns the decoded output.</li>
+          <li>Write <code>get_disk_usage(path="/")</code> using <code>shutil.disk_usage()</code>, returning used/total/percent.</li>
+          <li>Combine both into a <code>health_check()</code> function that prints a one-line summary.</li>
+          <li>Run the script and confirm it prints real values from your machine.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>linux_health_check.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">import</span> subprocess, shutil
+
+<span class="tok-kw">def</span> <span class="tok-fn">get_disk_usage</span>(path=<span class="tok-str">"/"</span>):
+    total, used, free = shutil.disk_usage(path)
+    percent = <span class="tok-bi">round</span>((used / total) * <span class="tok-num">100</span>, <span class="tok-num">1</span>)
+    <span class="tok-kw">return</span> percent
+
+<span class="tok-kw">def</span> <span class="tok-fn">health_check</span>():
+    usage = get_disk_usage()
+    <span class="tok-bi">print</span>(<span class="tok-str">f"disk usage: {usage}%"</span>)
+
+health_check()</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>disk usage: 47.2%</code> (value depends on your machine).</p>
+        <p><b>Challenge:</b> extend <code>health_check()</code> to also print available memory using the <code>psutil</code> package, and raise a warning if disk usage exceeds 90%.</p>
+      </div>
+    </div>
+
+    <!-- LAB 2 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 02 — Log Parsing</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> extract and count error types from a raw log file</span></div>
+        <p><b>Prerequisites:</b> Modules 03–04 (Loops, Functions).</p>
+        <ol class="step-list">
+          <li>Create a sample log file with a mix of <code>INFO</code>, <code>WARNING</code>, and <code>ERROR</code> lines.</li>
+          <li>Write <code>parse_log(path)</code> that loops through the file and counts occurrences of each log level.</li>
+          <li>Print a summary table of counts.</li>
+          <li>Print only the <code>ERROR</code> lines, with their line numbers.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>log_parser.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">def</span> <span class="tok-fn">parse_log</span>(path):
+    counts = {<span class="tok-str">"INFO"</span>: <span class="tok-num">0</span>, <span class="tok-str">"WARNING"</span>: <span class="tok-num">0</span>, <span class="tok-str">"ERROR"</span>: <span class="tok-num">0</span>}
+    <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path) <span class="tok-kw">as</span> f:
+        <span class="tok-kw">for</span> line <span class="tok-kw">in</span> f:
+            <span class="tok-kw">for</span> level <span class="tok-kw">in</span> counts:
+                <span class="tok-kw">if</span> level <span class="tok-kw">in</span> line:
+                    counts[level] += <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> counts</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>{'INFO': 14, 'WARNING': 3, 'ERROR': 2}</code></p>
+        <p><b>Challenge:</b> extend the parser to extract timestamps and report the time range covered by the log file.</p>
+      </div>
+    </div>
+
+    <!-- LAB 3 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 03 — Service Monitoring</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> build a repeatable service health poller</span></div>
+        <p><b>Prerequisites:</b> Modules 02–05 (Conditions through OOP).</p>
+        <ol class="step-list">
+          <li>Model a <code>Service</code> class with <code>name</code>, <code>status</code>, and a <code>check()</code> method.</li>
+          <li>Simulate three services with different statuses.</li>
+          <li>Loop through them and print an alert for anything not <code>"running"</code>.</li>
+          <li>Track how many consecutive checks a service has failed.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>service_monitor.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">class</span> <span class="tok-fn">Service</span>:
+    <span class="tok-kw">def</span> <span class="tok-fn">__init__</span>(<span class="tok-bi">self</span>, name, status=<span class="tok-str">"running"</span>):
+        <span class="tok-bi">self</span>.name = name
+        <span class="tok-bi">self</span>.status = status
+        <span class="tok-bi">self</span>.failed_checks = <span class="tok-num">0</span>
+
+    <span class="tok-kw">def</span> <span class="tok-fn">check</span>(<span class="tok-bi">self</span>):
+        <span class="tok-kw">if</span> <span class="tok-bi">self</span>.status != <span class="tok-str">"running"</span>:
+            <span class="tok-bi">self</span>.failed_checks += <span class="tok-num">1</span>
+        <span class="tok-kw">return</span> <span class="tok-bi">self</span>.status</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>ALERT: payments-api is stopped (2 consecutive failed checks)</code></p>
+        <p><b>Challenge:</b> add auto-restart logic that flips <code>status</code> back to <code>"running"</code> after 3 failed checks, simulating a self-healing service.</p>
+      </div>
+    </div>
+
+    <!-- LAB 4 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 04 — Docker Automation</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> script container status checks</span></div>
+        <p><b>Prerequisites:</b> Modules 04–06 (Functions, OOP, Constructors); Docker installed.</p>
+        <ol class="step-list">
+          <li>Write <code>list_containers()</code> using <code>subprocess.run(["docker", "ps", "--format", "{{.Names}}:{{.Status}}"])</code>.</li>
+          <li>Parse the output into a list of <code>(name, status)</code> tuples.</li>
+          <li>Print containers that are not <code>"Up"</code>.</li>
+          <li>Wrap the result in a small <code>ContainerReport</code> class with a <code>summary()</code> method.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>docker_status.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">import</span> subprocess
+
+<span class="tok-kw">def</span> <span class="tok-fn">list_containers</span>():
+    result = subprocess.run(
+        [<span class="tok-str">"docker"</span>, <span class="tok-str">"ps"</span>, <span class="tok-str">"--format"</span>, <span class="tok-str">"{{.Names}}:{{.Status}}"</span>],
+        capture_output=<span class="tok-kw">True</span>, text=<span class="tok-kw">True</span>
+    )
+    <span class="tok-kw">return</span> [line.split(<span class="tok-str">":"</span>, <span class="tok-num">1</span>) <span class="tok-kw">for</span> line <span class="tok-kw">in</span> result.stdout.strip().splitlines() <span class="tok-kw">if</span> line]</code></pre>
+        </div>
+        <p><b>Expected output:</b> a list like <code>[['web', 'Up 2 hours'], ['redis', 'Up 2 hours']]</code></p>
+        <p><b>Challenge:</b> flag any container whose uptime is under 5 minutes as "recently restarted" — a possible crash-loop signal.</p>
+      </div>
+    </div>
+
+    <!-- LAB 5 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 05 — Kubernetes Automation</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> summarize pod health across a namespace</span></div>
+        <p><b>Prerequisites:</b> Modules 05–07 (OOP through Generators); familiarity with <code>kubectl</code> output format.</p>
+        <ol class="step-list">
+          <li>Given a sample list of pod dicts (simulating <code>kubectl get pods -o json</code> output), write a generator <code>unhealthy_pods(pods)</code>.</li>
+          <li>Yield only pods where <code>status != "Running"</code>.</li>
+          <li>Build a <code>NamespaceReport</code> class that consumes the generator and counts issues by pod.</li>
+          <li>Print a final summary line.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>k8s_pod_report.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">def</span> <span class="tok-fn">unhealthy_pods</span>(pods):
+    <span class="tok-kw">for</span> pod <span class="tok-kw">in</span> pods:
+        <span class="tok-kw">if</span> pod[<span class="tok-str">"status"</span>] != <span class="tok-str">"Running"</span>:
+            <span class="tok-kw">yield</span> pod</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>2 unhealthy pods found in namespace 'payments-prod'</code></p>
+        <p><b>Challenge:</b> group unhealthy pods by <code>status</code> value (<code>CrashLoopBackOff</code>, <code>Pending</code>, etc.) and print counts per group.</p>
+      </div>
+    </div>
+
+    <!-- LAB 6 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 06 — Configuration Parsing</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> validate a YAML config before deployment</span></div>
+        <p><b>Prerequisites:</b> Module 04 (Functions); the <code>PyYAML</code> package.</p>
+        <ol class="step-list">
+          <li>Create a sample <code>config.yaml</code> with a few required keys (<code>service_name</code>, <code>replicas</code>, <code>image</code>).</li>
+          <li>Write <code>validate_config(path, required_keys)</code> that loads the YAML and checks every required key is present.</li>
+          <li>Return a list of any missing keys.</li>
+          <li>Print a pass/fail result based on that list.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>validate_config.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">import</span> yaml
+
+<span class="tok-kw">def</span> <span class="tok-fn">validate_config</span>(path, required_keys):
+    <span class="tok-kw">with</span> <span class="tok-bi">open</span>(path) <span class="tok-kw">as</span> f:
+        config = yaml.safe_load(f)
+    <span class="tok-kw">return</span> [key <span class="tok-kw">for</span> key <span class="tok-kw">in</span> required_keys <span class="tok-kw">if</span> key <span class="tok-kw">not</span> <span class="tok-kw">in</span> config]</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>missing keys: ['replicas']</code> (or <code>[]</code> if the config is valid).</p>
+        <p><b>Challenge:</b> add type validation — confirm <code>replicas</code> is an <code>int</code> and <code>image</code> matches a <code>name:tag</code> pattern.</p>
+      </div>
+    </div>
+
+    <!-- LAB 7 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 07 — Security Log Analysis</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> detect brute-force login attempts from an auth log</span></div>
+        <p><b>Prerequisites:</b> Modules 02–04, 07 (Conditions, Loops, Functions, Generators).</p>
+        <ol class="step-list">
+          <li>Create a sample auth log with repeated <code>"Failed password"</code> lines from the same IP.</li>
+          <li>Write a generator <code>failed_logins(path)</code> yielding <code>(ip, timestamp)</code> tuples.</li>
+          <li>Count failures per IP using a dictionary.</li>
+          <li>Flag any IP with 5+ failures as a brute-force suspect.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>bruteforce_detector.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">def</span> <span class="tok-fn">count_failures_by_ip</span>(failures):
+    counts = {}
+    <span class="tok-kw">for</span> ip, _ <span class="tok-kw">in</span> failures:
+        counts[ip] = counts.get(ip, <span class="tok-num">0</span>) + <span class="tok-num">1</span>
+    <span class="tok-kw">return</span> {ip: n <span class="tok-kw">for</span> ip, n <span class="tok-kw">in</span> counts.items() <span class="tok-kw">if</span> n &gt;= <span class="tok-num">5</span>}</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>{'203.0.113.44': 8}</code></p>
+        <p><b>Challenge:</b> add a time-window check — only count failures that occurred within a 10-minute span as a single brute-force burst.</p>
+      </div>
+    </div>
+
+    <!-- LAB 8 -->
+    <div class="disclosure">
+      <button class="disclosure__trigger">Lab 08 — Backup Automation</button>
+      <div class="disclosure__panel">
+        <div class="meta-row"><span><b>Objective:</b> build a scriptable backup routine with rotation</span></div>
+        <p><b>Prerequisites:</b> Modules 04–06 (Functions, OOP, Constructors).</p>
+        <ol class="step-list">
+          <li>Write <code>create_backup(source_dir, dest_dir)</code> using <code>shutil.make_archive</code>.</li>
+          <li>Name each archive with a timestamp, e.g. <code>backup_2026-08-06_0300.zip</code>.</li>
+          <li>Write <code>rotate_backups(dest_dir, keep=5)</code> that deletes the oldest archives beyond the retention count.</li>
+          <li>Wire both functions together into a single <code>run_backup_job()</code>.</li>
+        </ol>
+        <div class="code-block">
+          <div class="code-block__header"><span>backup_job.py</span><button class="copy-btn">copy</button></div>
+          <pre><code><span class="tok-kw">import</span> shutil, os, datetime
+
+<span class="tok-kw">def</span> <span class="tok-fn">create_backup</span>(source_dir, dest_dir):
+    stamp = datetime.datetime.now().strftime(<span class="tok-str">"%Y-%m-%d_%H%M"</span>)
+    archive_name = <span class="tok-bi">os</span>.path.join(dest_dir, <span class="tok-str">f"backup_{stamp}"</span>)
+    <span class="tok-kw">return</span> shutil.make_archive(archive_name, <span class="tok-str">"zip"</span>, source_dir)</code></pre>
+        </div>
+        <p><b>Expected output:</b> <code>backup_2026-08-06_0300.zip created</code></p>
+        <p><b>Challenge:</b> add basic integrity verification — after creating the archive, re-open it and confirm the expected number of files are present.</p>
+      </div>
+    </div>
+
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer"><span>8 labs</span><span>Estimated total time: ~6 hrs</span></div>
+</main>
+</div>
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML = '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>

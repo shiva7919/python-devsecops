@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction — python-training-docs</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<script>(function(){ var t = localStorage.getItem('ptd-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); })();</script>
+</head>
+<body data-page="introduction" data-root="../">
+<div id="site-header"></div>
+<div class="shell">
+<div id="site-sidebar"></div>
+<main class="main">
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <article class="content">
+    <div class="eyebrow"><span class="status-dot"></span> pages/introduction.html</div>
+    <h1>Introduction</h1>
+    <p>Welcome. This course teaches Python from first principles, but every example is drawn from the work you'll actually do as an infrastructure, security, or platform engineering intern: checking whether a disk is nearly full, looping over a fleet of servers, parsing a firewall log, or modeling a Kubernetes cluster as an object.</p>
+
+    <h2 id="how-to-use">How to use this documentation</h2>
+    <p>Each module follows the same structure: theory, syntax, worked examples, a set of DevOps/security/cloud examples, exercises, a short quiz, and a summary. Work through modules in order — later modules assume you're comfortable with earlier ones.</p>
+    <div class="callout callout--tip">
+      <div class="callout__title">Tip</div>
+      <p>Use the sidebar's checkmarks to track what you've completed, and press <code>/</code> anywhere to jump to search.</p>
+    </div>
+
+    <h2 id="prerequisites">Prerequisites</h2>
+    <ul>
+      <li>No prior programming experience required.</li>
+      <li>Basic comfort navigating a Linux terminal is helpful (not required for the core modules, required for the labs).</li>
+      <li>A willingness to type out every example yourself rather than just reading it.</li>
+    </ul>
+
+    <h2 id="environment">Setting up your environment</h2>
+    <p>Install Python 3.10 or later. Verify the install from a terminal:</p>
+    <div class="code-block">
+      <div class="code-block__header"><span>terminal</span><button class="copy-btn">copy</button></div>
+      <pre><code>$ python3 --version
+Python 3.11.6
+
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ python3 -c "print('environment ready')"
+environment ready</code></pre>
+    </div>
+    <div class="callout callout--note">
+      <div class="callout__title">Note</div>
+      <p>All examples in this course are written against Python 3.10+. Some syntax (like structural pattern matching) will not work on older interpreters.</p>
+    </div>
+
+    <h2 id="mindset">The mindset: automation over repetition</h2>
+    <p>Every module in this course exists to answer one question: <em>how do I stop doing this by hand?</em> If you find yourself SSHing into ten servers to check the same thing, or re-reading the same log file every morning, that's a signal a script belongs there instead. Keep that question in mind as you work through the material.</p>
+
+    <h2 id="whats-next">What's next</h2>
+    <p>Start with <a href="variables.html">Module 01 — Variables</a>, where you'll store the first pieces of infrastructure data — server names, IPs, and environment variables — as real Python values.</p>
+  </article>
+
+  <div class="page-nav" id="page-nav"></div>
+  <div class="page-footer">
+    <span>Last reviewed: internal training team</span>
+    <span>Reading time: ~8 min</span>
+  </div>
+</main>
+</div>
+
+<div id="site-footer"></div>
+<script src="../js/navigation.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/progress.js"></script>
+<script src="../js/quiz.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('site-footer').innerHTML =
+    '<footer class="site-footer">python-training-docs · <a href="../index.html">home</a></footer>';
+});
+</script>
+</body>
+</html>
