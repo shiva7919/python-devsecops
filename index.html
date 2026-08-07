@@ -19,19 +19,24 @@
 
 <section class="hero">
   <div class="hero__inner">
-    <div class="hero__eyebrow"><span class="status-dot"></span> status: training-environment/online</div>
-    <h1>Python, taught the way you'll actually use it in production.</h1>
-    <p class="hero__sub">A documentation-style course for DevOps, DevSecOps, Security, Cloud, SRE, and Platform Engineering interns — every concept is taught through servers, pipelines, logs, and infrastructure, not fruit and animal examples.</p>
-    <div class="hero__actions">
-      <a class="btn" href="pages/introduction.html">Start the course →</a>
-      <a class="btn btn--ghost" href="pages/labs.html">Jump to labs</a>
+    <div class="hero__text-col">
+      <div class="hero__eyebrow"><span class="status-dot"></span> status: training-environment/online</div>
+      <h1>Python, taught the way you'll actually use it in production.</h1>
+      <p class="hero__sub">A documentation-style course for DevOps, DevSecOps, Security, Cloud, SRE, and Platform Engineering interns — every concept is taught through servers, pipelines, logs, and infrastructure.</p>
+      <div class="hero__actions">
+        <a class="btn" href="pages/introduction.html">Start the course →</a>
+        <a class="btn btn--ghost" href="pages/labs.html">Jump to labs</a>
+      </div>
+      <div class="hero__meta">
+        <div><b data-counter="7">7</b> core modules</div>
+        <div><b data-counter="8">8</b> hands-on labs</div>
+        <div><b data-counter="10">10</b> mini projects</div>
+        <div id="hero-progress-label"><b id="hero-progress-pct">0%</b> your progress</div>
+      </div>
     </div>
-    <div class="hero__meta">
-      <div><b>7</b> core modules</div>
-      <div><b>8</b> hands-on labs</div>
-      <div><b>10</b> mini projects</div>
-      <div><b>~18–24 hrs</b> estimated duration</div>
-      <div id="hero-progress-label"><b id="hero-progress-pct">0%</b> your progress</div>
+
+    <div class="hero__widget-col" id="terminal-preview-widget">
+      <!-- Rendered dynamically by js/interactive-terminal.js -->
     </div>
   </div>
 </section>
@@ -131,6 +136,7 @@
 <div id="site-footer"></div>
 
 <script src="js/navigation.js"></script>
+<script src="js/interactive-terminal.js"></script>
 <script src="js/app.js"></script>
 <script src="js/search.js"></script>
 <script src="js/progress.js"></script>

@@ -1,67 +1,73 @@
-/* ============================================================
-   THEME TOKENS
-   Visual identity: "operations console" — file-tree navigation,
-   status-light accents, monospace display type. Built for an
-   audience that lives in terminals and config files.
-   ============================================================ */
-
 :root {
-  /* ---- Palette -------------------------------------------- */
-  --ink: #12161c;            /* primary text / dark surfaces   */
-  --ink-soft: #232a35;       /* dark surface, one step lighter */
-  --paper: #f5f6f3;          /* light background                */
-  --paper-raised: #ffffff;   /* light surface (cards, panels)   */
-  --slate: #5b6472;          /* muted text                      */
-  --slate-line: #dfe2e7;     /* hairline borders, light mode    */
-  --signal: #1f9d63;         /* status-OK green, primary accent */
-  --signal-soft: #e5f6ee;    /* signal tint background          */
-  --wire: #3457a6;           /* secondary accent (links, info)  */
-  --wire-soft: #e8edf9;
-  --alert: #c1502e;          /* warnings                        */
-  --alert-soft: #fbeae4;
-  --danger: #b3261e;
-  --danger-soft: #fbebe9;
+  /* ---- Apple-inspired Typography Stack ----------------------- */
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', 'IBM Plex Mono', Consolas, monospace;
 
-  /* ---- Type -------------------------------------------------*/
-  --font-display: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
-  --font-body: 'IBM Plex Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  /* ---- Apple Color Tokens ------------------------------------ */
+  --ink: #000000;            /* true black for OLED depth      */
+  --ink-soft: #161617;       /* elevated dark card surface     */
+  --paper: #f5f5f7;          /* Apple light background         */
+  --paper-raised: #ffffff;   /* light surface                  */
+  --slate: #86868b;          /* Apple muted gray text          */
+  --slate-line: rgba(0, 0, 0, 0.08); /* subtle light border       */
+  --signal: #2997ff;         /* Apple signature blue accent    */
+  --signal-soft: rgba(41, 151, 255, 0.12); /* blue glow accent  */
+  --signal-green: #30d158;   /* Apple status green             */
+  --signal-green-soft: rgba(48, 209, 88, 0.12);
+  --wire: #6e56cf;           /* violet secondary accent        */
+  --wire-soft: rgba(110, 86, 207, 0.1);
+  --alert: #ff9f0a;          /* Apple warning orange           */
+  --alert-soft: rgba(255, 159, 10, 0.12);
+  --danger: #ff453a;         /* Apple danger red               */
+  --danger-soft: rgba(255, 69, 58, 0.12);
 
-  /* ---- Scale --------------------------------------------------*/
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --shadow-sm: 0 1px 2px rgba(18, 22, 28, 0.06);
-  --shadow-md: 0 4px 16px rgba(18, 22, 28, 0.10);
-  --shadow-lg: 0 12px 32px rgba(18, 22, 28, 0.16);
+  /* ---- Glassmorphism & Effects ------------------------------- */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-blur: blur(20px) saturate(180%);
+
+  /* ---- Scale & Shadows ---------------------------------------*/
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 30px rgba(41, 151, 255, 0.25);
 
   /* ---- Live theme values (light default) ---------------------*/
   --bg: var(--paper);
   --surface: var(--paper-raised);
-  --surface-alt: #eef0ec;
-  --text: var(--ink);
+  --surface-alt: #ebebeb;
+  --text: #1d1d1f;
   --text-muted: var(--slate);
   --border: var(--slate-line);
   --accent: var(--signal);
   --accent-soft: var(--signal-soft);
-  --link: var(--wire);
-  --code-bg: #12161c;
-  --code-text: #e7ebee;
-  --code-border: #2a313d;
+  --link: var(--signal);
+  --code-bg: #161617;
+  --code-text: #f5f5f7;
+  --code-border: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] {
-  --bg: #0c0f14;
-  --surface: var(--ink-soft);
-  --surface-alt: #1a212b;
-  --text: #e7ebee;
-  --text-muted: #9aa4b2;
-  --border: #2a313d;
-  --accent: #34c37f;
-  --accent-soft: rgba(52, 195, 127, 0.12);
-  --link: #7ea2e6;
-  --code-bg: #05070a;
-  --code-text: #dbe4ea;
-  --code-border: #232a35;
+  --glass-bg: rgba(22, 22, 23, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(24px) saturate(200%);
+
+  --bg: #000000;
+  --surface: #161617;
+  --surface-alt: #222224;
+  --text: #f5f5f7;
+  --text-muted: #86868b;
+  --border: rgba(255, 255, 255, 0.12);
+  --accent: #2997ff;
+  --accent-soft: rgba(41, 151, 255, 0.18);
+  --link: #2997ff;
+  --code-bg: #000000;
+  --code-text: #e8e8ed;
+  --code-border: rgba(255, 255, 255, 0.12);
 }
 
 /* Status-light dot used across the UI as the signature motif */
@@ -70,16 +76,17 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-  animation: pulse 2.4s ease-in-out infinite;
+  background: var(--signal-green);
+  box-shadow: 0 0 10px var(--signal-green);
+  animation: pulse-apple 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+@keyframes pulse-apple {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.65; box-shadow: 0 0 16px var(--signal-green); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .status-dot { animation: none; }
 }
+

@@ -116,6 +116,82 @@ function initKeyboardShortcuts() {
   });
 }
 
+/* ---------------- Scroll Reveal Engine ---------------- */
+function initScrollReveal() {
+  const targets = document.querySelectorAll('.section, .card, .roadmap__step, .hero__inner');
+  targets.forEach(el => el.classList.add('reveal-on-scroll'));
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  targets.forEach(el => observer.observe(el));
+}
+
+/* ---------------- 3D Card Tilt Effect ---------------- */
+function initCardTilt() {
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+      card.style.setProperty('--mouse-x', `${(x / rect.width * 100).toFixed(1)}%`);
+      card.style.setProperty('--mouse-y', `${(y / rect.height * 100).toFixed(1)}%`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    });
+  });
+}
+
+/* ---------------- Animated Counter Logic ---------------- */
+function initAnimatedCounters() {
+  const counters = document.querySelectorAll('[data-counter]');
+  if (!counters.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const targetNum = parseInt(el.getAttribute('data-counter'), 10);
+        if (isNaN(targetNum)) return;
+        let start = 0;
+        const duration = 1200;
+        const stepTime = 30;
+        const steps = duration / stepTime;
+        const increment = targetNum / steps;
+
+        const timer = setInterval(() => {
+          start += increment;
+          if (start >= targetNum) {
+            el.textContent = targetNum;
+            clearInterval(timer);
+          } else {
+            el.textContent = Math.floor(start);
+          }
+        }, stepTime);
+
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  counters.forEach(el => observer.observe(el));
+}
+
 document.addEventListener('navigation:ready', () => {
   bindThemeToggle();
 });
@@ -126,4 +202,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDisclosures();
   initExpandCollapseAll();
   initKeyboardShortcuts();
+  initScrollReveal();
+  initCardTilt();
+  initAnimatedCounters();
 });
+
